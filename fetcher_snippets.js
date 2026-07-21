@@ -157,7 +157,7 @@ function exportJSON(fileData, filename = "filedata.json") {
   let withMetaData = { 
     date: new Date().toISOString(),
     latestNttId: fileData[0].nttId,
-    files: fileData
+    data: fileData
    }
   
   const json = JSON.stringify(withMetaData, null, 2);
