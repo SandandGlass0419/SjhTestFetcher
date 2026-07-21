@@ -3,7 +3,7 @@ function getBoardListBody(count) {
 
   let body = null;
 	const parser = new DOMParser();
-  $.ajax({  // ajax statement from selectBoardDetailAjax.do; list_btn
+  $.ajax({  // ajax statement from selectBoardDetailAjax.do, list_btn
     type:'POST'
     , url:'/dggb/module/board/selectBoardListAjax.do'
     , cache : false
@@ -53,6 +53,13 @@ function parseBoardList(boardList) {
 	});
 
   return idList;
+}
+
+function needsUpdate(latestNttId) {
+  let boardList = getBoardListBody(1);
+  let id = parseBoardList(boardList);
+
+  return id[0].nttId == latestNttId;
 }
 
 function getBoardDetail(bbsId, nttId) {
@@ -147,18 +154,23 @@ function getFileDataFromIdList(idList) {
 }
 
 function exportJSON(fileData, filename = "filedata.json") {
-    const json = JSON.stringify(fileData, null, 2);
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
+  let withMetaData = { 
+    date: new Date().toISOString(),
+    latestNttId: fileData[0].nttId,
+    files: fileData
+   }
+  
+  const json = JSON.stringify(withMetaData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
 
-    const a = document.createElement('a');  // download
-    a.href = url;
-    a.download = filename;
-    a.click();
+  const a = document.createElement('a');  // download
+  a.href = url;
+  a.download = filename;
+  a.click();
 
-    URL.revokeObjectURL(url);
+  URL.revokeObjectURL(url);
 }
-
 
 var count = getBoardListCount();
 var boardList = getBoardListBody(count);
@@ -166,5 +178,5 @@ var boardList = getBoardListBody(count);
 var idList = parseBoardList(boardList);
 
 var fileData = getFileDataFromIdList(idList);
-console.log(fileData);
+// console.log(fileData);
 exportJSON(fileData);
