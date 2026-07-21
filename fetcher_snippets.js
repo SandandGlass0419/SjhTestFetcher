@@ -52,6 +52,10 @@ function parseBoardList(boardList) {
     };
 	});
 
+  if (idList.length == 0) {
+    console.warn("List length is 0! check if logged in properly")
+  }
+
   return idList;
 }
 
@@ -59,7 +63,7 @@ function needsUpdate(latestNttId) {
   let boardList = getBoardListBody(1);
   let id = parseBoardList(boardList);
 
-  return id[0].nttId == latestNttId;
+  return id[0].nttId != latestNttId;
 }
 
 function getBoardDetail(bbsId, nttId) {
