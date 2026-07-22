@@ -1,0 +1,24 @@
+{
+  "name": "sjhtestfetcher",
+  "version": "1.0.0",
+  "description": "서울세종고 정기고사문제은행 시험문제 다운로드 링크 생성",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SandandGlass0419/SjhTestFetcher.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SandandGlass0419/SjhTestFetcher/issues"
+  },
+  "homepage": "https://github.com/SandandGlass0419/SjhTestFetcher#readme",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "puppeteer": "^25.3.0"
+  }
+}
