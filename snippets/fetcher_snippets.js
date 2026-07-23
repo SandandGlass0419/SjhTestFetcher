@@ -32,8 +32,8 @@ function getBoardListCount() {
 	return total;
 }
 
-function parseBoardList(boardList) {
-  let anchors = [...boardList.getElementsByClassName('samu')];
+function parseToIdList(boardListBody) {
+  let anchors = [...boardListBody.getElementsByClassName('samu')];
 
   const regex = /fnView\(\s*'([^']*)'\s*,\s*'([^']*)'\s*\)/; // expected form: fnView("bbsId", "nttId")
 
@@ -43,8 +43,8 @@ function parseBoardList(boardList) {
 
     if (!match) {
       console.warn(`Failed to match list entry! (check if boardList is properly parsed) Tried: ${onclickString}`);
-      console.log(boardList);
-  }
+      console.log(boardListBody);
+    }
 
     return {
       bbsId: match ? match[1] : null,
@@ -61,7 +61,7 @@ function parseBoardList(boardList) {
 
 function needsUpdate(latestNttId) {
   let boardList = getBoardListBody(1);
-  let id = parseBoardList(boardList);
+  let id = parseToIdList(boardList);
 
   return id[0].nttId != latestNttId;
 }
@@ -177,9 +177,9 @@ function exportJSON(fileData, filename = "filedata.json") {
 }
 
 var count = getBoardListCount();
-var boardList = getBoardListBody(count);
+var boardListBody = getBoardListBody(count);
 
-var idList = parseBoardList(boardList);
+var idList = parseToIdList(boardListBody);
 
 var fileData = getFileDataFromIdList(idList);
 // console.log(fileData);
