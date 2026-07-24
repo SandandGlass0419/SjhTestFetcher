@@ -29,11 +29,9 @@ async function main() {
 
     let count = await getBoardListCount();
     // await needsUpdate('27314400');
-    let fileData = await fetchFileData(5);
+    let fileData = await fetchFileDataAfter('27314367');
 
-    let json = fileData ? exportJSON(fileData) : '';
-
-    console.log(json);
+    console.log(fileData.length);
 }
 
 async function goto(url) {
@@ -60,25 +58,45 @@ async function injectFetcher() {
     await page.addScriptTag({ path: './fetcher.js' });
 }
 
-// use after injectFetcher()
 async function getBoardListCount() {
     return await page.evaluate(() => getBoardListCount());
 }
 
+// use after injectFetcher()
 async function needsUpdate(latestNttId) {
     return await page.evaluate(latestNttId => needsUpdate(latestNttId), latestNttId);
 }
 
 async function fetchFileData(count) {
     return await page.evaluate(count => {
-        let boardList = getBoardListBody(count);
-        if (!boardList) return null;
+        let boardListBody = getBoardListBody(count);
+        if (!boardListBody) return null;
 
-        let idList = parseToIdList(boardList);
+        let idList = parseToIdList(boardListBody);
         if (!idList) return null;
 
         return getFileDataFromIdList(idList);
     }, count);
+}
+
+async function fetchFileDataAfter(nttId) {
+    return await page.evaluate(nttId => {
+        let wholeCount = getBoardListCount();
+        if (!wholeCount) return null;
+
+        let boardListBody = getBoardListBody(wholeCount);
+        if (!boardListBody) return null;
+
+        let idList = parseToIdList(boardListBody);
+        if (!idList) return null;
+
+        let idIndex = idList.findIndex(e => e.nttId === nttId);
+        idIndex = idIndex === -1 ? wholeCount : idIndex;
+
+        idList.splice(idIndex);
+
+        return getFileDataFromIdList(idList);
+    }, nttId);
 }
 
 function exportJSON(fileData) {
